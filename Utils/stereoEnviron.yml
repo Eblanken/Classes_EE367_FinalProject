@@ -1,0 +1,12 @@
+name: stereoEnviron
+channels:
+  - defaults
+dependencies:
+  - jupyter
+  - torchvision
+  - ipykernel
+  - python=3.7
+  - scikit-image
+  - pytorch
+  - requests
+prefix: /Users/ANoSenseSolution/anaconda/envs/stereoEnviron

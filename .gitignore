@@ -1,0 +1,6 @@
+*.pyc
+*.log
+*.tar
+*.DS_STORE
+Data/*
+Output/*
