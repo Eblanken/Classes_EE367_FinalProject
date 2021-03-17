@@ -1,7 +1,8 @@
-from skimage.transform import rescale
+from   skimage.transform import rescale
 import numpy as np
 import os
 import glob
+from   parse import parse
 
 # Resizes images so that all dimensions match the bounding box when possible
 def standardizedResize(highResImage, maximumDimensions):
@@ -34,10 +35,9 @@ def verifyOutPath(currentImageName, algorithmName):
             os.mkdir("Output/%s" % currentImageName)
         os.mkdir(outPath)
     elif os.path.isfile(outPath + "/OutDisparity.ppm"):
-        print("Disparity for image %s alreay exists, skipping." % (currentImageName))
-        return None
+        return True
     
-    return outPath
+    return False
 
 def getResourcePaths(currentImageName):
     leftPathList          = glob.glob("Data/%s/Left.*" % currentImageName)
@@ -76,3 +76,29 @@ def getResourcePaths(currentImageName):
         occlusionMapRightPath = occlusionMapRightList[0]
     
     return [leftPath, rightPath, disparityLeftPath, disparityRightPath, cameraCalibrationPath, occlusionMapLeftPath, occlusionMapRightPath]    
+
+def getCalibrationMatrices(cameraCalibrationPath):
+    file = open(cameraCalibrationPath, "r")
+
+    # Camera calibration 0
+    calibMatrix0 = np.zeros((3, 3))
+    coefficients0 = parse("cam0=[{:f} 0 {:f}; 0 {:f} {:f}; 0 0 1]\n", file.readline())
+    calibMatrix0[0, 0] = coefficients0[0]
+    calibMatrix0[0, 2] = coefficients0[1]
+    calibMatrix0[1, 1] = coefficients0[2]
+    calibMatrix0[1, 2] = coefficients0[3]
+    calibMatrix0[2, 2] = 1
+
+    # Camera calibration 1
+    calibMatrix1 = np.zeros((3, 3))
+    coefficients1 = parse("cam1=[{:f} 0 {:f}; 0 {:f} {:f}; 0 0 1]\n", file.readline())
+    calibMatrix1[0, 0] = coefficients1[0]
+    calibMatrix1[0, 2] = coefficients1[1]
+    calibMatrix1[1, 1] = coefficients1[2]
+    calibMatrix1[1, 2] = coefficients1[3]
+    calibMatrix1[2, 2] = 1
+
+    # Done
+    return calibMatrix0, calibMatrix1
+    
+
