@@ -10,3 +10,4 @@ Output/*
 *.pfm
 *.pgm
 *.csv
+calib.txt
